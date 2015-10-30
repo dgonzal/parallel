@@ -99,6 +99,7 @@ if __name__ == "__main__":
     names =[]
     data_type =[]
     NFiles = []
+    active_process =[]
 
     for cycle in Job.Job_Cylce:
         if cycle.OutputDirectory.startswith('./'):             
@@ -161,7 +162,7 @@ if __name__ == "__main__":
                 for m in del_list:
                     nameOfCycle = cycle.Cyclename.replace('::','.')
                     if not  os.path.exists(cycle.OutputDirectory+'/'+nameOfCycle+'.'+data_type[m]+'.'+names[m]+'.root') or options.forceMerge:
-                        add_histos(cycle.OutputDirectory,nameOfCycle+'.'+data_type[m]+'.'+names[m],NFiles[m],workdir,OutputTreeName)
+                        active_process.append(add_histos(cycle.OutputDirectory,nameOfCycle+'.'+data_type[m]+'.'+names[m],NFiles[m],workdir,OutputTreeName))
                     del NFiles[m]
                     del names[m]
                     del data_type[m]
@@ -170,7 +171,14 @@ if __name__ == "__main__":
             print '-'*80
             if options.loop: time.sleep(30)
             if len(NFiles)==0: loop_check = False 
-                        
+        
+            
+    if active_process: print'Using nice level 10 for subprocesses'
+    for proc in active_process: 
+        if proc:
+            proc.wait()
+            proc.kill()
+
     filesum =0
     for i in NFiles:
         filesum+=i
@@ -179,4 +187,4 @@ if __name__ == "__main__":
 
     stop = timeit.default_timer()
 
-    print "Program was running for",round(stop - start,2),"sec" 
+    print "SFrame Batch was running for",round(stop - start,2),"sec" 
