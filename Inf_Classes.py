@@ -59,7 +59,7 @@ class InputData(object):
             if(item[0]=='NEventsMax'): self.NEventsMax = item[1]
             if(item[0]=='Type'): self.Type = item[1]
             if(item[0]=='Version'): self.Version = item[1]
-            if(item[0]=='Cacheable'): self.Cacheable = item[1]
+            if(item[0]=='Cacheable'): self.Cacheable = False
             if(item[0]=='NEventsSkip'): self.NEventsSkip = item[1]
         #print self.Version
         self.io_list =[]
