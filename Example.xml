@@ -6,7 +6,7 @@
 
 
 <!--
-   <ConfigParse NEventsBreak="0" LastBreak="0" FileSplit="10" />
+   <ConfigParse NEventsBreak="0" LastBreak="0" FileSplit="10" AutoResubmit="10"/>
    <ConfigSGE RAM ="2" DISK ="2" Mail="XXXX@desy.de" Notification="as" Workdir="workdir"/>
 -->
 

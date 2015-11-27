@@ -1,10 +1,11 @@
 #!/usr/bin/env python
 
 from subprocess import call
+from subprocess import Popen
 import os
 
 from tree_checker import *
-# from fhadd import fhadd
+#from fhadd import fhadd
 
 
 def write_script(name,workdir,header):
@@ -75,6 +76,9 @@ def submit_qsub(NFiles,Stream,name,workdir):
         print Stream+' has been created'
  
     call(['qsub'+' -t 1-'+str(NFiles)+' -o '+Stream+'/'+' -e '+Stream+'/'+' '+workdir+'/split_script_'+name+'.sh'], shell=True)
+    #proc_qstat = Popen(['qsub'+' -t 1-'+str(NFiles)+' -o '+Stream+'/'+' -e '+Stream+'/'+' '+workdir+'/split_script_'+name+'.sh'],shell=True,stdout=subprocess.PIPE)
+    #return proc_qstat.communicate()[0]
+
 
 def resubmit(Stream,name,workdir,header):
     #print Stream ,name
@@ -84,18 +88,19 @@ def resubmit(Stream,name,workdir,header):
         print Stream+' has been created'
  
     call(['qsub'+' -o '+Stream+'/'+' -e '+Stream+'/'+' '+workdir+'/split_script_'+name+'.sh'], shell=True)
-
+    #proc_qstat = Popen(['qsub'+' -o '+Stream+'/'+' -e '+Stream+'/'+' '+workdir+'/split_script_'+name+'.sh'],shell=True,stdout=subprocess.PIPE)
+    #return proc_qstat.communicate()[0]
 
 def add_histos(directory,name,NFiles,workdir,outputTree) :
-    print 'Merging',name+'.root'
     if os.path.exists(directory+name+'.root'):
         call(['rm '+directory+name+'.root'], shell=True)
     string =" "
     fileContainer=[]
+    proc = None
     for i in range(NFiles):
-        if(outputTree):
-            if not check_TreeExists(directory+workdir+'/'+name+'_'+str(i)+'.root',outputTree):
-                continue
+    #    if(outputTree):
+    #        if not check_TreeExists(directory+workdir+'/'+name+'_'+str(i)+'.root',outputTree):
+    #            continue
         string += directory+workdir+'/'+name+'_'+str(i)+'.root'
         string += " "
         fileContainer.append(directory+workdir+'/'+name+'_'+str(i)+'.root')
@@ -103,7 +108,8 @@ def add_histos(directory,name,NFiles,workdir,outputTree) :
     #print string
     if not string.isspace():
         #fhadd(directory+name+'.root',fileContainer,"TH1")
-        call(['hadd '+'-v 1 '+directory+name+'.root'+string], shell=True)
+        print 'Merging',name+'.root'
+        proc = Popen(['nice -n 10 hadd '+'-v 1 '+directory+name+'.root'+string], shell=True)
     else:
-        print 'Nothing to merge'
-    #return 0
+        print 'Nothing to merge for',name+'.root'
+    return proc 
