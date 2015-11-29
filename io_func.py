@@ -171,11 +171,11 @@ def write_all_xml(path,datasetName,header,Job,workdir):
                 break 
             if (i+1)*MaxEvents >= NEvents:
                 MaxEvents = NEvents-i*SkipEvents
-            LumiWeight = float(NEvents)/float(MaxEvents)
+            # LumiWeight = float(NEvents)/float(MaxEvents)
             outfile = open(path+'_'+str(i+1)+'.xml','w+')
             for line in header.header:
                 outfile.write(line)
-            outfile.write(write_job(Job,Version,i*SkipEvents,MaxEvents,i,-1,workdir,LumiWeight))
+            outfile.write(write_job(Job,Version,i*SkipEvents,MaxEvents,i,-1,workdir)) #,LumiWeight))
             outfile.close()
  
     elif FileSplit>0:
